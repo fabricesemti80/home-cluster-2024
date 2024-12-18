@@ -43,7 +43,6 @@ spec:
             env:
               COMPlus_EnableDiagnostics: "0"
               SONARR__APP__INSTANCENAME: Sonarr
-              ##TODO: create secret for api key
               SONARR__AUTH__APIKEY: "${SECRET_SONARR_APIKEY}"
               SONARR__AUTH__METHOD: External
               SONARR__AUTH__REQUIRED: DisabledForLocalAddresses

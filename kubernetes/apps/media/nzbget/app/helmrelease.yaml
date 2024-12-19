@@ -45,6 +45,8 @@ spec:
             env:
               NZBGET_LOG_TARGET: stdout
               NZBGET_OUTPUTMODE: log
+              NZBGET_USER: ${SECRET_NZBGET_USER}
+              NZBGET_PASSWORD: ${SECRET_NZBGET_PASSWORD}
               NZBGET_PORT: &port 6789
               TZ: ${TIMEZONE}
             probes:

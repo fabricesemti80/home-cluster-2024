@@ -30,9 +30,9 @@ spec:
         pod:
           securityContext:
             runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [10000]
             seccompProfile: { type: RuntimeDefault }
@@ -107,12 +107,13 @@ spec:
       config:
         enabled: true
         existingClaim: sonarr-config
+        globalMounts:
+          - path: /config
       add-ons:
         type: emptyDir
       tmp:
         type: emptyDir
       media:
-        enabled: true
         type: nfs
         server: 10.0.40.250
         path: /docker-media

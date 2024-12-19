@@ -5,4 +5,5 @@ resources:
   - ./namespace.yaml
   - ./jellyfin/ks.yaml
   - ./sonarr/ks.yaml
+  - ./nzbget/ks.yaml
 

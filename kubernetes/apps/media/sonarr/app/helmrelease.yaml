@@ -115,7 +115,7 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: 10.0.40.250
-        path: /docker-media
+        server: 10.0.40.240
+        path: /media
         globalMounts:
           - path: /media

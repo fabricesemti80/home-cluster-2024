@@ -2,10 +2,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster-apps-nzbget
+  name: cluster-apps-nzbhydra2
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/media/nzbget/app
+  path: ./kubernetes/apps/media/nzbhydra2/app
   prune: true
   sourceRef:
     kind: GitRepository

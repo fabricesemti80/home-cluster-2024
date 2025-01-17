@@ -1,8 +1,8 @@
----
+
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: nzbget
+  name: nzbhydra2
   namespace: media
 spec:
   interval: 30m
@@ -24,31 +24,29 @@ spec:
       retries: 3
   values:
     controllers:
-      nzbget:
+      nzbhydra2:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
           securityContext:
             runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
+            runAsUser: ${NAS_USER_ID}
+            runAsGroup:  ${NAS_GROUP_ID}
+            fsGroup: 100
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [10000]
             seccompProfile: { type: RuntimeDefault }
         containers:
           app:
             image:
-              repository: ghcr.io/k8s-at-home/nzbget-testing
-              tag: v21.2-r2333
+              repository: linuxserver/nzbhydra2
+              tag: 7.11.3
               pullPolicy: IfNotPresent
             env:
-              NZBGET_LOG_TARGET: stdout
-              NZBGET_OUTPUTMODE: log
-              NZBGET_USER: ${SECRET_NZBGET_USER}
-              NZBGET_PASSWORD: ${SECRET_NZBGET_PASSWORD}
-              NZBGET_PORT: &port 6789
+              NZBHYDRA2_PORT: &port 5076
               TZ: ${TIMEZONE}
+              PUID: ${NAS_USER_ID}
+              PGID: ${NAS_GROUP_ID}
             probes:
               liveness:
                 enabled: true
@@ -64,6 +62,7 @@ spec:
                 cpu: 10m
                 memory: 256Mi
               limits:
+                cpu: 1000m
                 memory: 1Gi
             securityContext:
               allowPrivilegeEscalation: false
@@ -72,7 +71,7 @@ spec:
 
     service:
       app:
-        controller: nzbget
+        controller: nzbhydra2
         ports:
           http:
             port: *port
@@ -84,8 +83,11 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           hajimari.io/icon: mdi:download
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+          nginx.ingress.kubernetes.io/proxy-body-size: "100m"
         hosts:
-          - host: &host "nzbget.${SECRET_DOMAIN}"
+          - host: &host "nzbhydra2.${SECRET_DOMAIN}"
             paths:
               - path: /
                 pathType: Prefix
@@ -98,14 +100,20 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: nzbget-config
+        existingClaim: nzbhydra2-config
         globalMounts:
           - path: /config
       tmp:
         type: emptyDir
       downloads:
         type: nfs
-        server: 10.0.40.250
-        path: /docker-media/downloads
+        server: 10.0.40.240
+        path: /downloads
         globalMounts:
           - path: /downloads
+      media:
+        type: nfs
+        server: 10.0.40.240
+        path: /media
+        globalMounts:
+          - path: /media

@@ -6,3 +6,5 @@ metadata:
   namespace: flux-system
 data:
   SETTING_EXAMPLE: Global settings for your cluster go in this file, this file is NOT encrypted
+  NAS_USER_ID: 1002
+  NAS_GROUP_ID: 100

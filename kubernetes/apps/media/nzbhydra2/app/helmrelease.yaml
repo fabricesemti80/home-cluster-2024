@@ -63,7 +63,7 @@ spec:
       # @default -- See values.yaml
       main:
         enabled: true
-        className: external
+        ingressClassName: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
           hajimari.io/icon: mdi:download
@@ -82,7 +82,9 @@ spec:
                   # -- Overrides the service port reference for this path
                   port:
         tls:
-          - hosts: [*host]
+          - hosts:
+              - *host
+            secretName: nzbhydra2-tls
     # -- Configure persistence settings for the chart under this key.
     # @default -- See values.yaml
     probes:

@@ -43,7 +43,7 @@ spec:
               tag: 7.11.3
               pullPolicy: IfNotPresent
             env:
-              NZBHYDRA2_PORT: &port 5076
+              # NZBHYDRA2_PORT: &port 5076
               TZ: ${TIMEZONE}
               PUID: ${NAS_USER_ID}
               PGID: ${NAS_GROUP_ID}
@@ -55,6 +55,9 @@ spec:
               startup:
                 enabled: true
                 spec:
+                  httpGet:
+                      path: /health
+                      port: &port 5076
                   failureThreshold: 30
                   periodSeconds: 5
             resources:
